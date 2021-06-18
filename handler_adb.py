@@ -2,8 +2,9 @@ import os
 import platform
 import subprocess
 import time
+from datetime import datetime
 
-import cv2
+import cv2 as cv
 import numpy as np
 
 import utils
@@ -37,6 +38,19 @@ def connect(device="") -> bool:
     if device == "nox":
         return utils.bytes_to_string(execute("connect localhost:62001")) == "device"
     return utils.bytes_to_string(execute("get-state")) == "device"
+
+
+def dev():
+    while True:
+        image = screenshot()  # Get image directly from ADB
+        cv.imshow("dev", image)  # Show image in window
+        print(utils.fps())  # Print FPS (crappy rate yeah)
+        k = cv.waitKey(25)  # Get key pressed every 25ms
+        if k == ord('s'):  # If 's' is pressed
+            cv.imwrite("tmp/" + str(datetime.now()).replace(":", ".") + ".jpg", image)  # Save the image in tmp/
+        elif k == ord('q'):  # If 'q' is pressed
+            cv.destroyWindow("dev")  # Destroy the window
+            break
 
 
 def execute(command):
@@ -98,7 +112,7 @@ def screenshot():
     utils.debug("screenshot")
     image_bytes = execute("shell screencap -p").replace(b'\r\n', b'\n')
     # noinspection PyTypeChecker
-    return cv2.imdecode(np.fromstring(image_bytes, np.uint8), cv2.IMREAD_COLOR)
+    return cv.imdecode(np.fromstring(image_bytes, np.uint8), cv.IMREAD_COLOR)
 
 
 def settings(tmp=""):
