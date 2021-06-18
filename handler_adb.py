@@ -45,6 +45,22 @@ def execute(command):
     return pipe.stdout.read()
 
 
+def screen_input(input_type="", coords=None, sleep_timer=0):
+    """
+        Input related to screen:
+            - tap       [<X>, <Y>]
+            - swipe     [<X>, <Y>, <XEND>, <YEND>, <TIME>]
+    """
+    print("screen_input [input_type=" + input_type + ", coords=[" + str(coords)
+          + "], sleep_timer=" + str(sleep_timer) + "]")
+    if input_type == "tap" and coords.len == 2:
+        execute("input tap " + " ".join(coords))
+        time.sleep(sleep_timer)
+    elif input_type == "swipe" and coords.len == 5:
+        execute("input swipe " + " ".join(coords))
+        time.sleep(sleep_timer)
+
+
 def install(url):
     """
         Download ADB and unzip it in the current repository then delete the .zip
@@ -70,7 +86,19 @@ def screenshot():
     """
     print("screenshot")
     image_bytes = execute("shell screencap -p").replace(b'\r\n', b'\n')
+    # It's working so I'll let it that way, but I prefer to have no warning
+    # noinspection PyTypeChecker
     return cv2.imdecode(np.fromstring(image_bytes, np.uint8), cv2.IMREAD_COLOR)
+
+
+def settings(tmp=""):
+    """
+        Function to work on settings, possible arguments:
+            - disable_orientation
+    """
+    print("settings [tmp=" + tmp + "]")
+    if tmp == "disable_orientation":
+        execute("content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:0")
 
 
 def start_app(app="", sleep_timer=0):
