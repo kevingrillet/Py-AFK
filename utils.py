@@ -1,5 +1,3 @@
-import pathlib
-import subprocess
 from zipfile import ZipFile
 
 import requests
@@ -23,15 +21,6 @@ def get_filename_from_url(url):
         return None
     url_split = url.split("/")
     return url_split[len(url_split) - 1]
-
-
-def adb_execute(command):
-    """
-        execute command, return stdout & stderr
-    """
-    pipe = subprocess.Popen("adb\\platform-tools\\adb.exe " + command,
-                            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
-    return pipe.stdout.read()
 
 
 def unzip(filename, path=None):
