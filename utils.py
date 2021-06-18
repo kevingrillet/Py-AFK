@@ -1,9 +1,27 @@
+import time
 from zipfile import ZipFile
 
 import requests
 
+import constant
 
-def download_file(url):
+
+def bytes_to_string(msg=None) -> str:
+    """
+        Convert utf-8 bytes into string
+    """
+    return msg.replace(b'\r\n', b'').decode("utf-8")
+
+
+def debug(msg="", level=0):
+    """
+        print debug if enough level
+    """
+    if constant.DEBUG > level and msg != "":
+        print("[DEBUG] " + msg)
+
+
+def download_file(url) -> str:
     """
         download file from url, return file name from url
     """
@@ -13,12 +31,26 @@ def download_file(url):
     return filename
 
 
-def get_filename_from_url(url):
+def fps() -> float:
+    """
+        return fps
+    """
+    new_frame = time.time()
+    timer = 1 / (new_frame - fps.frame)
+    fps.frame = new_frame
+    return timer
+
+
+# https://stackoverflow.com/questions/279561/what-is-the-python-equivalent-of-static-variables-inside-a-function
+fps.frame = time.time()
+
+
+def get_filename_from_url(url) -> str:
     """
         return file name from url, last split after "/"
     """
     if not url:
-        return None
+        return ""
     url_split = url.split("/")
     return url_split[len(url_split) - 1]
 
