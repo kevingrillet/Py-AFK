@@ -15,7 +15,7 @@ def check():
         Check if adb repository exists, if not try to download it
     """
     utils.debug("check")
-    if not os.path.exists("adb/"):
+    if not os.path.exists("../adb/"):
         ret = "ADB not found, installing " + platform.system() + " version."
         if platform.system() == "Windows":
             install("https://dl.google.com/android/repository/platform-tools-latest-windows.zip")
@@ -47,7 +47,7 @@ def dev():
         print(utils.fps())  # Print FPS (crappy rate yeah)
         k = cv.waitKey(25)  # Get key pressed every 25ms
         if k == ord('s'):  # If 's' is pressed
-            cv.imwrite("tmp/" + str(datetime.now()).replace(":", ".") + ".jpg", image)  # Save the image in tmp/
+            cv.imwrite(".temp/" + str(datetime.now()).replace(":", ".") + ".jpg", image)  # Save the image in .temp/
         elif k == ord('q'):  # If 'q' is pressed
             cv.destroyWindow("dev")  # Destroy the window
             break
@@ -92,7 +92,7 @@ def install(url):
     """
     utils.debug("install [url=" + url + "]")
     filename = utils.download_file(url)
-    utils.unzip(filename, "adb/")
+    utils.unzip(filename, "../adb/")
     os.remove(filename)
 
 

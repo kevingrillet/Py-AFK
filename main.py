@@ -1,7 +1,5 @@
-import game_logic as gl
-import game_utils as gu
-import handler_adb as adb
-import handler_config as cfg
+from game import game_utils as gu, game_logic as gl
+from utils import handler_adb as adb, handler_config as cfg
 
 
 def check_adb():

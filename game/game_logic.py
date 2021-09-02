@@ -1,7 +1,3 @@
-import handler_adb as adb
-import cv2 as cv
-
-
 def arena_of_heroes():
     print("TODO")
 
