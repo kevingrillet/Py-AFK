@@ -20,9 +20,9 @@ def check():
         if platform.system() == "Windows":
             install("https://dl.google.com/android/repository/platform-tools-latest-windows.zip")
         elif platform.system() == "Darwin":
-            install("https://dl.google.com/android/repository/platform-tools-latest-windows.zip")
+            install("https://dl.google.com/android/repository/platform-tools-latest-darwin.zip")
         elif platform.system() == "Linux":
-            install("https://dl.google.com/android/repository/platform-tools-latest-windows.zip")
+            install("https://dl.google.com/android/repository/platform-tools-latest-linux.zip")
     else:
         ret = "ADB found."
     return ret
@@ -32,12 +32,17 @@ def connect(device="") -> bool:
     """
         Check if device is connected
             - ""
+            - "memu"
             - "nox"
     """
     utils.debug("connect [device=" + device + "]")
-    if device == "nox":
-        return utils.bytes_to_string(execute("connect localhost:62001")) == "device"
-    return utils.bytes_to_string(execute("get-state")) == "device"
+    match device:
+        case "memu":
+            return utils.bytes_to_string(execute("connect localhost:21503")) == "device"
+        case "nox":
+            return utils.bytes_to_string(execute("connect localhost:62001")) == "device"
+        case _:
+            return utils.bytes_to_string(execute("get-state")) == "device"
 
 
 def dev():

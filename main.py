@@ -1,5 +1,5 @@
-from game import game_utils as gu, game_logic as gl
-from utils import handler_adb as adb, handler_config as cfg
+from game import common_utils as cu, tab_all, tab_heroes as heroes, tab_ranhorn as ranhorn, tab_campaign as campaign, tab_dark_forest as dark_forest
+from utils import handler_adb as adb, handler_config as cfg, constant
 
 
 def check_adb():
@@ -9,8 +9,8 @@ def check_adb():
         print("[ERROR] Failed to connect to ADB.")
         exit(1)
     print(adb.get_resolution())  # Get resolution
-    adb.stop_app("com.lilithgame.hgame.gp")  # Stop the app
-    adb.start_app("com.lilithgame.hgame.gp", 30)  # Start the app
+    adb.stop_app(constant.PACKAGE_NAME)  # Stop the app
+    adb.start_app(constant.PACKAGE_NAME, 30)  # Start the app
 
 
 def check_config():
@@ -21,34 +21,38 @@ def check_config():
 
 def game_starting():
     # First things first
-    gu.wait_game_to_load()
-    gu.wait_update()
-    gu.close_main_menu_popup()
+    cu.wait_game_to_load()
+    cu.wait_update()
+    cu.close_main_menu_popup()
 
 
 def game_daily():
     # Campaign tab
-    gl.collect_loot()
-    gl.battle()
-    gl.fast_rewards()
-    gl.collect_loot()
+    campaign.collect_loot()
+    campaign.battle()
+    campaign.fast_rewards()
+    campaign.collect_loot()
 
     # Dark Forest
-    gl.kings_tower()
-    gl.arena_of_heroes()
-    gl.bounty_board()
+    dark_forest.kings_tower()
+    dark_forest.arena_of_heroes()
+    dark_forest.bounty_board()
 
     # Ranhorn
-    gl.guild()
-    gl.the_oak_inn()
-    gl.temple_of_ascension()
-    gl.resonating_crystal()
-    gl.the_noble_tavern()
-    gl.store()
+    ranhorn.guild()
+    ranhorn.the_oak_inn()
+    ranhorn.temple_of_ascension()
+    ranhorn.resonating_crystal()
+    ranhorn.the_noble_tavern()
+    ranhorn.store()
+
+    # Heroes
+    heroes.enhance_gear()
+
     # End
-    gl.quests()
-    gl.marchants()
-    gl.mail()
+    tab_all.quests()
+    tab_all.marchants()
+    tab_all.mail()
 
 
 check_config()
