@@ -1,5 +1,6 @@
-from utils import handler_adb as adb, handler_cv2 as hcv
 import cv2 as cv
+
+from utils import handler_adb as adb, handler_cv2 as hcv
 
 
 def close_main_menu_popup():

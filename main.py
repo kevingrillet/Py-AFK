@@ -1,4 +1,5 @@
-from game import common_utils as cu, tab_all, tab_heroes as heroes, tab_ranhorn as ranhorn, tab_campaign as campaign, tab_dark_forest as dark_forest
+from game import common_utils as cu, tab_global as glob, tab_heroes as heroes, tab_ranhorn as ranhorn, \
+    tab_campaign as campaign, tab_dark_forest as dark_forest
 from utils import handler_adb as adb, handler_config as cfg, constant
 
 
@@ -50,9 +51,9 @@ def game_daily():
     heroes.enhance_gear()
 
     # End
-    tab_all.quests()
-    tab_all.marchants()
-    tab_all.mail()
+    glob.quests()
+    glob.marchants()
+    glob.mail()
 
 
 check_config()
@@ -63,4 +64,3 @@ adb.dev()
 if False:
     game_starting()
     game_daily()
-

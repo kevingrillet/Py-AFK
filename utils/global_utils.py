@@ -3,7 +3,7 @@ from zipfile import ZipFile
 
 import requests
 
-import constant
+from utils import constant
 
 
 def bytes_to_string(msg=None) -> str:

@@ -7,14 +7,14 @@ from datetime import datetime
 import cv2 as cv
 import numpy as np
 
-import utils
+from utils import global_utils
 
 
 def check():
     """
         Check if adb repository exists, if not try to download it
     """
-    utils.debug("check")
+    global_utils.debug("check")
     if not os.path.exists("../adb/"):
         ret = "ADB not found, installing " + platform.system() + " version."
         if platform.system() == "Windows":
@@ -35,21 +35,19 @@ def connect(device="") -> bool:
             - "memu"
             - "nox"
     """
-    utils.debug("connect [device=" + device + "]")
-    match device:
-        case "memu":
-            return utils.bytes_to_string(execute("connect localhost:21503")) == "device"
-        case "nox":
-            return utils.bytes_to_string(execute("connect localhost:62001")) == "device"
-        case _:
-            return utils.bytes_to_string(execute("get-state")) == "device"
+    global_utils.debug("connect [device=" + device + "]")
+    return {
+        "memu": global_utils.bytes_to_string(execute("connect localhost:21503")) == "device",
+        "nox": global_utils.bytes_to_string(execute("connect localhost:62001")) == "device"
+    }.get(device, global_utils.bytes_to_string(execute("get-state")) == "device")
 
 
 def dev():
+    global_utils.debug("dev > s to save, q to quit")
     while True:
         image = screenshot()  # Get image directly from ADB
         cv.imshow("dev", image)  # Show image in window
-        print(utils.fps())  # Print FPS (crappy rate yeah)
+        print(global_utils.fps())  # Print FPS (crappy rate yeah)
         k = cv.waitKey(25)  # Get key pressed every 25ms
         if k == ord('s'):  # If 's' is pressed
             cv.imwrite(".temp/" + str(datetime.now()).replace(":", ".") + ".jpg", image)  # Save the image in .temp/
@@ -71,8 +69,8 @@ def get_resolution() -> str:
     """
         return resolution of device
     """
-    utils.debug("get_resolution ")
-    return utils.bytes_to_string(execute("shell wm size"))
+    global_utils.debug("get_resolution ")
+    return global_utils.bytes_to_string(execute("shell wm size"))
 
 
 def screen_input(input_type="", coords=None, sleep_timer=0):
@@ -81,8 +79,8 @@ def screen_input(input_type="", coords=None, sleep_timer=0):
             - tap       [<X>, <Y>]
             - swipe     [<X>, <Y>, <XEND>, <YEND>, <TIME>]
     """
-    utils.debug("screen_input [input_type=" + input_type + ", coords=[" + str(coords)
-                + "], sleep_timer=" + str(sleep_timer) + "]")
+    global_utils.debug("screen_input [input_type=" + input_type + ", coords=[" + str(coords)
+                       + "], sleep_timer=" + str(sleep_timer) + "]")
     if input_type == "tap" and coords.len == 2:
         execute("input tap " + " ".join(coords))
         time.sleep(sleep_timer)
@@ -95,9 +93,9 @@ def install(url):
     """
         Download ADB and unzip it in the current repository then delete the .zip
     """
-    utils.debug("install [url=" + url + "]")
-    filename = utils.download_file(url)
-    utils.unzip(filename, "../adb/")
+    global_utils.debug("install [url=" + url + "]")
+    filename = global_utils.download_file(url)
+    global_utils.unzip(filename, "../adb/")
     os.remove(filename)
 
 
@@ -105,7 +103,7 @@ def restart():
     """
         Restart ADB
     """
-    utils.debug("restart")
+    global_utils.debug("restart")
     execute("kill-server")
     execute("start-server")
 
@@ -114,7 +112,7 @@ def screenshot():
     """
         Take a screenshot and return it
     """
-    utils.debug("screenshot")
+    global_utils.debug("screenshot")
     image_bytes = execute("shell screencap -p").replace(b'\r\n', b'\n')
     # noinspection PyTypeChecker
     return cv.imdecode(np.fromstring(image_bytes, np.uint8), cv.IMREAD_COLOR)
@@ -125,7 +123,7 @@ def settings(tmp=""):
         Function to work on settings, possible arguments:
             - disable_orientation
     """
-    utils.debug("settings [tmp=" + tmp + "]")
+    global_utils.debug("settings [tmp=" + tmp + "]")
     if tmp == "disable_orientation":
         execute("content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:0")
 
@@ -134,7 +132,7 @@ def start_app(app="", sleep_timer=0):
     """
         Start app then sleep for sleep_timer
     """
-    utils.debug("start_app [app=" + app + ", sleep_timer=" + str(sleep_timer) + "]")
+    global_utils.debug("start_app [app=" + app + ", sleep_timer=" + str(sleep_timer) + "]")
     if app:
         # execute("shell am start -n " + app)
         execute("shell monkey -p " + app + " 1")
@@ -145,6 +143,6 @@ def stop_app(app=""):
     """
         Start app then sleep for sleep_timer
     """
-    utils.debug("stop_app [app=" + app + "]")
+    global_utils.debug("stop_app [app=" + app + "]")
     if app:
         execute("shell am force-stop " + app)

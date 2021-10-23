@@ -23,4 +23,3 @@ def quests():
     dailies()
     weeklies()
     campaign()
-
