@@ -97,6 +97,8 @@ class HandlerAdb:
                 - tap       [<X>, <Y>]
                 - swipe     [<X>, <Y>, <XEND>, <YEND>, <TIME>]
         """
+        if coords is None:
+            coords = []
         global_utils.debug("screen_input [input_type=" + input_type + ", coords=[" + str(coords)
                            + "], sleep_timer=" + str(sleep_timer) + "]")
         if input_type == "tap" and coords.len == 2:
@@ -149,3 +151,14 @@ class HandlerAdb:
         global_utils.debug("stop_app [app=" + app + "]")
         if app:
             self.execute("shell am force-stop " + app)
+
+    def swipe(self, from_position=None, to_position=None, sleep_timer=0, swipe_timer=0):
+        if to_position is None:
+            to_position = [0, 0]
+        if from_position is None:
+            from_position = [0, 0]
+        self.screen_input("swipe", [from_position[0], from_position[1], to_position[0], to_position[1], swipe_timer],
+                          sleep_timer)
+
+    def tap(self, x=0, y=0, sleep_timer=0):
+        self.screen_input("tab", [x, y], sleep_timer)
