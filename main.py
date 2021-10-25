@@ -15,9 +15,10 @@ _cv2.dev()
 
 def game_starting():
     # First things first
-    cu.wait_game_to_load()
-    cu.wait_update()
-    cu.close_main_menu_popup()
+    _cu = cu.CommonUtils(_cv2)
+    _cu.wait_game_to_load()
+    _cu.wait_update()
+    _cu.close_main_menu_popup()
 
 
 def game_daily():
