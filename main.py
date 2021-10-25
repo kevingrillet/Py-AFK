@@ -1,23 +1,16 @@
 from game import common_utils as cu, tab_global as glob, tab_heroes as heroes, tab_ranhorn as ranhorn, \
     tab_campaign as campaign, tab_dark_forest as dark_forest
-from utils import handler_adb as adb, handler_config as cfg, constant
+from utils import handler_adb as adb, handler_config as cfg, handler_cv2 as cv2, constant
 
+_cfg = cfg.HandlerConfig("config/config.ini")
+_cfg.init()
 
-def check_adb():
-    adb.check()  # Installing ADB
-    adb.restart()  # Starting ADB
-    if not adb.connect():
-        print("[ERROR] Failed to connect to ADB.")
-        exit(1)
-    print(adb.get_resolution())  # Get resolution
-    adb.stop_app(constant.PACKAGE_NAME)  # Stop the app
-    adb.start_app(constant.PACKAGE_NAME, 30)  # Start the app
+_adb = adb.HandlerAdb()
+_adb.init()
+_adb.start(constant.PACKAGE_NAME, 0)
 
-
-def check_config():
-    config = cfg.get("config/config.ini")
-    if not config:
-        print("[ERROR] No config found.")
+_cv2 = cv2.HandlerCv2(_adb)
+_cv2.dev()
 
 
 def game_starting():
@@ -55,11 +48,6 @@ def game_daily():
     glob.marchants()
     glob.mail()
 
-
-check_config()
-check_adb()
-
-adb.dev()
 
 if False:
     game_starting()
