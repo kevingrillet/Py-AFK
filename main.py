@@ -1,55 +1,41 @@
-from game import common_utils as cu, tab_global as glob, tab_heroes as heroes, tab_ranhorn as ranhorn, \
-    tab_campaign as campaign, tab_dark_forest as dark_forest
-from utils import handler_adb as adb, handler_config as cfg, handler_cv2 as cv2, constant
+from game import after, before, campaign, common as cu, dark_forest, heroes, ranhorn
+from utils import constant, handler_adb, handler_config, handler_cv2
 
-_cfg = cfg.HandlerConfig("config/config.ini")
+# Init everything
+_cfg = handler_config.HandlerConfig("config/config.ini")
 _cfg.init()
 
-_adb = adb.HandlerAdb()
+_adb = handler_adb.HandlerAdb()
 _adb.init()
 _adb.start(constant.PACKAGE_NAME, 0)
 
-_cv2 = cv2.HandlerCv2(_adb)
+_cv2 = handler_cv2.HandlerCv2(_adb)
 _cv2.dev()
 
+# First things first
+_game_common = cu.Common(_cv2)
+# _game_common.run()
 
-def game_starting():
-    # First things first
-    _cu = cu.CommonUtils(_cv2)
-    _cu.wait_game_to_load()
-    _cu.wait_update()
-    _cu.close_main_menu_popup()
+# Before
+_game_before = before.Before(_cv2)
+# _game_before.run()
 
+# Campaign tab
+_game_campaign = campaign.Campaign(_cv2)
+# _game_campaign.run()
 
-def game_daily():
-    # Campaign tab
-    campaign.collect_loot()
-    campaign.battle()
-    campaign.fast_rewards()
-    campaign.collect_loot()
+# Dark Forest
+_game_dark_forest = dark_forest.DarkForest(_cv2)
+# _game_dark_forest.run()
 
-    # Dark Forest
-    dark_forest.kings_tower()
-    dark_forest.arena_of_heroes()
-    dark_forest.bounty_board()
+# Ranhorn
+_game_ranhorn = ranhorn.Ranhorn(_cv2)
+# _game_ranhorn.run()
 
-    # Ranhorn
-    ranhorn.guild()
-    ranhorn.the_oak_inn()
-    ranhorn.temple_of_ascension()
-    ranhorn.resonating_crystal()
-    ranhorn.the_noble_tavern()
-    ranhorn.store()
+# Heroes
+_game_heroes = heroes.Heroes(_cv2)
+# _game_heroes.run()
 
-    # Heroes
-    heroes.enhance_gear()
-
-    # End
-    glob.quests()
-    glob.marchants()
-    glob.mail()
-
-
-if False:
-    game_starting()
-    game_daily()
+# End
+_game_after = after.After(_cv2)
+# _game_after.run()
