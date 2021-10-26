@@ -1,3 +1,4 @@
+import random
 from datetime import datetime
 
 import cv2 as cv
@@ -94,7 +95,16 @@ class HandlerCv2:
             return False
         return True
 
+    def random_find(self) -> (int, int):
+        x1, y1 = self.find_start
+        x2, y2 = self.find_end
+        return random.randint(x1, x2), random.randint(y1, y2)
+
     def show_image(self):
         cv.imshow("show_image", self.target_image)
         cv.waitKey(1)
         cv.destroyWindow("show_image")
+
+    def tap_find(self, sleep_timer=0):
+        x, y = self.random_find()
+        self.adb.tap(x, y, sleep_timer)
