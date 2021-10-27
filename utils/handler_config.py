@@ -1,7 +1,9 @@
 import configparser
 
+from utils.cls.MetaSingleton import MetaSingleton
 
-class HandlerConfig:
+
+class HandlerConfig(metaclass=MetaSingleton):
     def __init__(self, path=""):
         self.path = path
 

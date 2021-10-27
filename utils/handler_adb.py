@@ -1,5 +1,6 @@
 import os
 import platform
+import random
 import subprocess
 import time
 
@@ -178,3 +179,9 @@ class HandlerAdb:
             input tab to screen (short version of screen_input)
         """
         self.screen_input("tab", [x, y], sleep_timer)
+
+    def tap_random(self, p1=(0, 0), p2=(0, 0), sleep_timer=0):
+        """
+            input tab to screen (short version of screen_input)
+        """
+        self.screen_input("tab", [random.randint(p1[0], p2[0]), random.randint(p1[1], p2[1])], sleep_timer)

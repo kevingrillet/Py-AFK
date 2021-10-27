@@ -18,11 +18,10 @@ class StartingStep(SuperIntEnum):
 class Common:
     def __init__(self, cv2: HandlerCv2):
         self.cv2 = cv2
-        self.images_list = ["./images/common/board_tales.jpg", "./images/common/campaign.jpg",
-                            "./images/common/cross.jpg", "./images/common/load.jpg",
-                            "./images/common/maintenance.jpg", "./images/common/special_gift.jpg",
-                            "./images/common/update.jpg"]
-        self.images = self.cv2.load_images(self.images_list)
+        self.images = self.cv2.load_images(["./images/common/board_tales.jpg", "./images/common/campaign.jpg",
+                                            "./images/common/cross.jpg", "./images/common/load.jpg",
+                                            "./images/common/maintenance.jpg", "./images/common/special_gift.jpg",
+                                            "./images/common/update.jpg"])
         self.step = StartingStep.INIT
 
     def check_game_to_load(self) -> bool:
