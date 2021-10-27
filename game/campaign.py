@@ -28,8 +28,12 @@ class Campaign:
         # Tap Free
         # Loop & tap Use until max
 
+    def gift_companion_points(self):
+        print("TODO")
+
     def run(self):
         self.collect_loot()
         self.battle()
         self.fast_rewards()
+        self.gift_companion_points()
         self.collect_loot()
