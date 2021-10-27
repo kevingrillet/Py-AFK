@@ -15,6 +15,7 @@ class HandlerCv2:
         self.find_end = None
         self.imread = cv.IMREAD_COLOR
         self.method = cv.TM_CCOEFF_NORMED
+        self.show_debug_image = False
         self.target_image = None
         self.threshold = 0.9
 
@@ -101,6 +102,8 @@ class HandlerCv2:
         return random.randint(x1, x2), random.randint(y1, y2)
 
     def show_image(self):
+        if not self.show_debug_image:
+            return
         cv.imshow("show_image", self.target_image)
         cv.waitKey(1)
         cv.destroyWindow("show_image")
