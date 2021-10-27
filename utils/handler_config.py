@@ -6,6 +6,9 @@ class HandlerConfig:
         self.path = path
 
     def get(self) -> configparser:
+        """
+            return config
+        """
         if not self.path:
             return None
         config = configparser.ConfigParser()
@@ -13,5 +16,8 @@ class HandlerConfig:
         return config
 
     def init(self):
+        """
+            check if config exists
+        """
         if not self.get():
             print("[ERROR] No config found.")

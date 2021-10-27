@@ -10,6 +10,7 @@ class HandlerAdb:
     def __init__(self, device="", adb=""):
         self.adb = adb
         self.device = device
+        self.require_new_capture = True
         self.resolution = None
         self.system = platform.system()
 
@@ -107,7 +108,6 @@ class HandlerAdb:
             print("[ERROR] Failed to connect to ADB.")
             exit(1)
         self.get_resolution()
-        print(self.resolution)  # Get resolution
         self.settings("disable_orientation")
 
     def restart_adb(self):
@@ -134,6 +134,7 @@ class HandlerAdb:
         elif input_type == "swipe" and len(coords) == 5:
             self.execute("input swipe " + " ".join(coords))
             time.sleep(sleep_timer)
+        self.require_new_capture = True
 
     def screenshot(self):
         """
@@ -162,6 +163,9 @@ class HandlerAdb:
         self.app_start(app, sleep_timer)
 
     def swipe(self, from_position=None, to_position=None, sleep_timer=0, swipe_timer=0):
+        """
+            input swipt to screen (short version of screen_input)
+        """
         if to_position is None:
             to_position = [0, 0]
         if from_position is None:
@@ -170,4 +174,7 @@ class HandlerAdb:
                           sleep_timer)
 
     def tap(self, x=0, y=0, sleep_timer=0):
+        """
+            input tab to screen (short version of screen_input)
+        """
         self.screen_input("tab", [x, y], sleep_timer)

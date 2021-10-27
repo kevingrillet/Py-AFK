@@ -8,23 +8,43 @@ class SuperIntEnum(IntEnum):
         return count
 
     def first(self):
-        if len(list(self.__class__)) == 0:
+        """
+            return first element of the enum
+        """
+        cls = self.__class__
+        members = list(cls)
+        if len(members) == 0:
             raise ValueError('Enumeration has no values')
-        return SuperIntEnum(0)
+        return members[0]
 
     def last(self):
-        if len(list(self.__class__)) == 0:
+        """
+            return last element of the enum
+        """
+        cls = self.__class__
+        members = list(cls)
+        if len(members) == 0:
             raise ValueError('Enumeration has no values')
-        return SuperIntEnum(len(list(self.__class__)))
+        return members[-1]
 
-    def pred(self, step=1):
-        v = self.value - step
-        if v == 0:
-            raise ValueError('Enumeration ended')
-        return SuperIntEnum(v)
+    def prev(self, step=1):
+        """
+            return previous element of the enum
+        """
+        cls = self.__class__
+        members = list(cls)
+        index = members.index(self) - step
+        if index < 0:
+            raise StopIteration('Enumeration ended')
+        return members[index]
 
-    def succ(self, step=1):
-        v = self.value + step
-        if v > len(list(self.__class__)):
-            raise ValueError('Enumeration ended')
-        return SuperIntEnum(v)
+    def next(self, step=1):
+        """
+            return next element of the enum
+        """
+        cls = self.__class__
+        members = list(cls)
+        index = members.index(self) + step
+        if index >= len(members):
+            raise StopIteration('Enumeration ended')
+        return members[index]
