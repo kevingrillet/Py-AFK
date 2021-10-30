@@ -4,6 +4,8 @@ import random
 import subprocess
 import time
 
+import psutil as psutil
+
 from utils import global_utils
 
 
@@ -91,6 +93,14 @@ class HandlerAdb:
                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
         return pipe.stdout.read()
 
+    def find_nox_adb(self):
+        processes = filter(lambda p: psutil.Process(p).name() == "nox_adb", psutil.pids())
+        for pid in processes:
+            path = os.path.abspath(psutil.Process(pid).cmdline()[1])
+            if path != "":
+                self.adb = path
+                break
+
     def get_resolution(self):
         """
             return resolution of device
@@ -103,12 +113,16 @@ class HandlerAdb:
             Init ADB
         """
         if self.adb == "":
-            self.check_installed()
+            if self.device == "Nox":
+                self.find_nox_adb()
+            else:
+                self.check_installed()
         self.restart_adb()
         if not self.connect():
             print("[ERROR] Failed to connect to ADB.")
             exit(1)
         self.get_resolution()
+        self.execute("shell settings put global heads_up_notifications_enabled 0")
         self.settings("disable_orientation")
 
     def restart_adb(self):
