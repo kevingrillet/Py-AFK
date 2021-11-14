@@ -10,7 +10,7 @@ _adb.init()
 # _adb.start(constant.PACKAGE_NAME, 0)
 
 _cv2 = handler_cv2.HandlerCv2(_adb)
-# _cv2.dev()
+_cv2.dev()
 _cv2.show_debug_image = True
 
 # First things first

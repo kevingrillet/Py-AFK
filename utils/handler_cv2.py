@@ -21,6 +21,7 @@ class HandlerCv2:
         self.method = cv.TM_CCOEFF_NORMED
         self.show_debug_image = False
         self.target_image = None
+        self.target_image_debug = None
         self.threshold = 0.9
 
     def check_match(self, data_image):
@@ -47,6 +48,7 @@ class HandlerCv2:
         """
         global_utils.debug("dev > s to save, q to quit")
         while True:
+            self.adb.require_new_capture = True
             self.get_image()  # Get image directly from ADB
             cv.imshow("dev", self.target_image)  # Show image in window
             print(global_utils.fps())  # Print FPS (crappy rate yeah)
@@ -62,7 +64,8 @@ class HandlerCv2:
         """
             Draw rect on find & show
         """
-        self.show_image(cv.rectangle(self.target_image, self.find_start, self.find_end, (0, 255, 0), 5))
+        self.target_image_debug = cv.rectangle(self.target_image_debug, self.find_start, self.find_end, (0, 255, 0), 5)
+        self.show_image(self.target_image_debug)
 
     def get_image(self):
         """
@@ -71,6 +74,7 @@ class HandlerCv2:
         if self.adb.require_new_capture:
             self.adb.require_new_capture = False
             self.target_image = cv.imdecode(np.fromstring(self.adb.screenshot(), np.uint8), cv.IMREAD_COLOR)
+            self.target_image_debug = self.target_image
             self.show_image()
 
     def load_images(self, images_list: list[str] = None) -> dict:
