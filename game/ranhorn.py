@@ -1,9 +1,11 @@
-from utils.handler_cv2 import HandlerCv2
+from utils.cls import superdecorator
+from utils.handlercv2 import HandlerCv2
 
 
+@superdecorator.decorate_all_functions()
 class Ranhorn:
-    def __init__(self, cv2: HandlerCv2):
-        self.cv2 = cv2
+    def __init__(self, hcv2: HandlerCv2):
+        self.hcv2 = hcv2 if hcv2 else HandlerCv2()
 
     def guild(self):
         def guild_hunting():

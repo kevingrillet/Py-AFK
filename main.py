@@ -1,38 +1,50 @@
-from game import campaign, common as cu, dark_forest, ending, heroes, ranhorn
-from utils import constant, handler_adb, handler_config, handler_cv2
+import logging
+import sys
+import time
+from datetime import datetime
+from pathlib import Path
 
-# Init everything
-# _cfg = handler_config.HandlerConfig("config/config.ini")
-# _cfg.init()
+from game import campaign, common as gc, constant as gcst
+from utils import constant, handleradb, handlercv2, common, handlerconfig
 
-_adb = handler_adb.HandlerAdb()
-_adb.init()
-# _adb.start(constant.PACKAGE_NAME, 0)
 
-_cv2 = handler_cv2.HandlerCv2(_adb)
-_cv2.dev()
-_cv2.show_debug_image = True
+def load_config():
+    """
+    Load config from config file
+    Create it if not existing
+    :return:
+    """
+    hcfg = handlerconfig.HandlerConfig('config/config.ini')
+    gcst.DEBUG_LEVEL = constant.DebugLevel(int(hcfg.get_value('debug', str(gcst.DEBUG_LEVEL.value), 'Settings')))
+    gcst.DEV_MODE = hcfg.get_value('dev', str(gcst.DEV_MODE), 'Settings') == 'True'
+    gcst.SCALE = float(hcfg.get_value('scale', str(gcst.SCALE), 'Settings'))
 
-# First things first
-_game_common = cu.Common(_cv2)
-_game_common.run()
 
-# Campaign tab
-_game_campaign = campaign.Campaign(_cv2)
-# _game_campaign.run()
+if __name__ == '__main__':
+    try:
+        Path('logs/').mkdir(parents=True, exist_ok=True)
+        logging.basicConfig(handlers=[logging.StreamHandler(sys.stdout),
+                                      logging.FileHandler('logs/' + str(datetime.now()).replace(':', '.') + '.log')],
+                            format='%(message)s', level=logging.DEBUG)
+        common.info('Started')
+        start_time = time.time()
+        load_config()
 
-# Dark Forest
-# _game_dark_forest = dark_forest.DarkForest(_cv2)
-# _game_dark_forest.run()
+        hadb = handleradb.HandlerAdb()
+        hcv2 = handlercv2.HandlerCv2(hadb)
+        hadb.init()
+        hadb.start(constant.PACKAGE_NAME, 0)
 
-# Ranhorn
-# _game_ranhorn = ranhorn.Ranhorn(_cv2)
-# _game_ranhorn.run()
+        gc.Common(hcv2).run()
+        # campaign.Campaign(hcv2).run()
 
-# Heroes
-# _game_heroes = heroes.Heroes(_cv2)
-# _game_heroes.run()
+        common.info('Done')
 
-# End
-# _game_ending = ending.Ending(_cv2)
-# _game_after.run()
+    except Exception as e:
+        log = logging.getLogger()
+        for hdlr in log.handlers[:]:  # remove the existing file handlers
+            if not isinstance(hdlr, logging.FileHandler):
+                log.removeHandler(hdlr)
+        handler = logging.StreamHandler(sys.stderr)
+        log.addHandler(handler)
+        logging.error(e, exc_info=True)

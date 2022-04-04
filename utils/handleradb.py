@@ -6,7 +6,7 @@ import time
 
 import psutil as psutil
 
-from utils import global_utils
+from utils import common
 
 
 class HandlerAdb:
@@ -19,9 +19,11 @@ class HandlerAdb:
 
     def app_check(self, app="") -> bool:
         """
-            Start app then sleep for sleep_timer
+            Check if app is running
+        :param app: name of the app
+        :return: true/false
         """
-        global_utils.debug("app_check [app=" + app + "]")
+        common.debug("app_check [app=" + app + "]")
         if app:
             return self.execute("shell pidof " + app) != ""
         return False
@@ -29,8 +31,11 @@ class HandlerAdb:
     def app_start(self, app="", sleep_timer=0):
         """
             Start app then sleep for sleep_timer
+        :param app: name of the app
+        :param sleep_timer:
+        :return:
         """
-        global_utils.debug("app_start [app=" + app + ", sleep_timer=" + str(sleep_timer) + "]")
+        common.debug("app_start [app=" + app + ", sleep_timer=" + str(sleep_timer) + "]")
         if app:
             # execute("shell am start -n " + app)
             self.execute("shell monkey -p " + app + " 1")
@@ -39,8 +44,10 @@ class HandlerAdb:
     def app_stop(self, app=""):
         """
             Start app then sleep for sleep_timer
+        :param app: name of the app
+        :return:
         """
-        global_utils.debug("app_stop [app=" + app + "]")
+        common.debug("app_stop [app=" + app + "]")
         if app:
             self.execute("shell am force-stop " + app)
 
@@ -52,13 +59,15 @@ class HandlerAdb:
         def install(url):
             """
                 Download ADB and unzip it in the current repository then delete the .zip
+            :param url: url of adb
+            :return:
             """
-            global_utils.debug("install [url=" + url + "]")
-            filename = global_utils.download_file(url)
-            global_utils.unzip(filename, "../adb/")
+            common.debug("install [url=" + url + "]")
+            filename = common.download_file(url)
+            common.unzip(filename, "../adb/")
             os.remove(filename)
 
-        global_utils.debug("check")
+        common.debug("check")
         if not os.path.exists("../adb/"):
             ret = "ADB not found, installing " + self.system + " version."
             if self.system == "Windows":
@@ -78,22 +87,31 @@ class HandlerAdb:
                 - ""
                 - "memu"
                 - "nox"
+
+        :return: true/false
         """
-        global_utils.debug("connect [device=" + self.device + "]")
+        common.debug("connect [device=" + self.device + "]")
         return {
-            "memu": global_utils.bytes_to_string(self.execute("connect localhost:21503")) == "device",
-            "nox": global_utils.bytes_to_string(self.execute("connect localhost:62001")) == "device"
-        }.get(self.device, global_utils.bytes_to_string(self.execute("get-state")) == "device")
+            "memu": common.bytes_to_string(self.execute("connect localhost:21503")) == "device",
+            "nox": common.bytes_to_string(self.execute("connect localhost:62001")) == "device"
+        }.get(self.device, common.bytes_to_string(self.execute("get-state")) == "device")
 
     def execute(self, command) -> bytes:
         """
             execute command, return stdout & stderr
+
+        :param command: command to execute
+        :return: stdout / stderr
         """
         pipe = subprocess.Popen(self.adb + " " + command,
                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
         return pipe.stdout.read()
 
     def find_nox_adb(self):
+        """
+            Look for adb in nox
+        :return:
+        """
         processes = filter(lambda p: psutil.Process(p).name() == "nox_adb", psutil.pids())
         for pid in processes:
             path = os.path.abspath(psutil.Process(pid).cmdline()[1])
@@ -103,10 +121,10 @@ class HandlerAdb:
 
     def get_resolution(self):
         """
-            return resolution of device
+            get resolution of device
         """
-        global_utils.debug("get_resolution ")
-        self.resolution = global_utils.bytes_to_string(self.execute("shell wm size"))
+        common.debug("get_resolution ")
+        self.resolution = common.bytes_to_string(self.execute("shell wm size"))
 
     def init(self):
         """
@@ -129,7 +147,7 @@ class HandlerAdb:
         """
             Restart ADB
         """
-        global_utils.debug("restart")
+        common.debug("restart")
         self.execute("kill-server")
         self.execute("start-server")
 
@@ -138,11 +156,16 @@ class HandlerAdb:
             Input related to screen:
                 - tap       [<X>, <Y>]
                 - swipe     [<X>, <Y>, <XEND>, <YEND>, <TIME>]
+
+        :param input_type: tap/swipe
+        :param coords:
+        :param sleep_timer:
+        :return:
         """
         if coords is None:
             coords = []
-        global_utils.debug("screen_input [input_type=" + input_type + ", coords=[" + str(coords)
-                           + "], sleep_timer=" + str(sleep_timer) + "]")
+        common.debug("screen_input [input_type=" + input_type + ", coords=[" + str(coords)
+                     + "], sleep_timer=" + str(sleep_timer) + "]")
         if input_type == "tap" and len(coords) == 2:
             self.execute("input tap " + " ".join(coords))
             time.sleep(sleep_timer)
@@ -154,25 +177,31 @@ class HandlerAdb:
     def screenshot(self):
         """
             Take a screenshot and return it
+        :return: image bytes
         """
-        global_utils.debug("screenshot")
+        common.debug("screenshot")
         image_bytes = self.execute("shell screencap -p").replace(b'\r\n', b'\n')
         # noinspection PyTypeChecker
         return image_bytes
 
-    def settings(self, tmp=""):
+    def settings(self, setting=""):
         """
             Function to work on settings, possible arguments:
                 - disable_orientation
+        :param setting:
+        :return:
         """
-        global_utils.debug("settings [tmp=" + tmp + "]")
-        if tmp == "disable_orientation":
+        common.debug("settings [tmp=" + setting + "]")
+        if setting == "disable_orientation":
             self.execute(
                 "content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:0")
 
     def start(self, app="", sleep_timer=0):
         """
             Restart the app
+        :param app: app name
+        :param sleep_timer:
+        :return:
         """
         self.app_stop(app)
         self.app_start(app, sleep_timer)
@@ -180,6 +209,11 @@ class HandlerAdb:
     def swipe(self, from_position=None, to_position=None, sleep_timer=0, swipe_timer=0):
         """
             input swipt to screen (short version of screen_input)
+        :param from_position:
+        :param to_position:
+        :param sleep_timer:
+        :param swipe_timer:
+        :return:
         """
         if to_position is None:
             to_position = [0, 0]
@@ -191,11 +225,19 @@ class HandlerAdb:
     def tap(self, x=0, y=0, sleep_timer=0):
         """
             input tab to screen (short version of screen_input)
+        :param x:
+        :param y:
+        :param sleep_timer:
+        :return:
         """
         self.screen_input("tab", [x, y], sleep_timer)
 
     def tap_random(self, p1=(0, 0), p2=(0, 0), sleep_timer=0):
         """
             input tab to screen (short version of screen_input)
+        :param p1:
+        :param p2:
+        :param sleep_timer:
+        :return:
         """
         self.screen_input("tab", [random.randint(p1[0], p2[0]), random.randint(p1[1], p2[1])], sleep_timer)

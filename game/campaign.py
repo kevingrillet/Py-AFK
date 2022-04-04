@@ -1,9 +1,11 @@
-from utils.handler_cv2 import HandlerCv2
+from utils.cls import superdecorator
+from utils.handlercv2 import HandlerCv2
 
 
+@superdecorator.decorate_all_functions()
 class Campaign:
-    def __init__(self, cv2: HandlerCv2):
-        self.cv2 = cv2
+    def __init__(self, hcv2: HandlerCv2):
+        self.hcv2 = hcv2 if hcv2 else HandlerCv2()
         self.images = self.cv2.load_images(None)
 
     def battle(self):
@@ -19,17 +21,17 @@ class Campaign:
     def collect_loot(self):
         print("TODO")
         # Tap on Chest
-        self.cv2.adb.tap_random((500, 1475), (600, 1550), 1)
+        self.hcv2.hadb.tap_random((500, 1475), (600, 1550), 1)
         # Tap Collect
-        self.cv2.adb.tap_random((500, 1475), (600, 1550), 1)
+        self.hcv2.hadb.tap_random((500, 1475), (600, 1550), 1)
         # Check special crap
         data_image = self.images[""]
-        if self.cv2.match(data_image):
-            self.cv2.tap_find(1)
+        if self.hcv2.match(data_image):
+            self.hcv2.tap_find(1)
         # Check level up
         data_image = self.images[""]
-        if self.cv2.match(data_image):
-            self.cv2.tap_find(1)
+        if self.hcv2.match(data_image):
+            self.hcv2.tap_find(1)
 
     def fast_rewards(self):
         print("TODO")

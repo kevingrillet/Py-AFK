@@ -2,14 +2,27 @@ from enum import IntEnum
 
 
 class SuperIntEnum(IntEnum):
-    # https://stackoverflow.com/a/61438054
-    # https://stackoverflow.com/a/38017095
+    def __eq__(self, other):
+        if self.__class__ is other.__class__:
+            return self.value == other.value
+        return NotImplemented
+
+    def __gt__(self, other):
+        if self.__class__ is other.__class__:
+            return self.value > other.value
+        return NotImplemented
+
+    def __lt__(self, other):
+        if self.__class__ is other.__class__:
+            return self.value < other.value
+        return NotImplemented
+
     def _generate_next_value_(self, start, count, last_values):
         return count
 
     def first(self):
         """
-            return first element of the enum
+        return first element of the enum
         """
         cls = self.__class__
         members = list(cls)
@@ -19,7 +32,7 @@ class SuperIntEnum(IntEnum):
 
     def last(self):
         """
-            return last element of the enum
+        return last element of the enum
         """
         cls = self.__class__
         members = list(cls)
@@ -27,9 +40,9 @@ class SuperIntEnum(IntEnum):
             raise ValueError('Enumeration has no values')
         return members[-1]
 
-    def prev(self, step=1):
+    def prev(self, step: int = 1):
         """
-            return previous element of the enum
+        return previous element of the enum
         """
         cls = self.__class__
         members = list(cls)
@@ -38,9 +51,9 @@ class SuperIntEnum(IntEnum):
             raise StopIteration('Enumeration ended')
         return members[index]
 
-    def next(self, step=1):
+    def next(self, step: int = 1):
         """
-            return next element of the enum
+        return next element of the enum
         """
         cls = self.__class__
         members = list(cls)

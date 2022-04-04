@@ -1,20 +1,20 @@
 from enum import auto
 
-from utils.cls.MetaSingleton import MetaSingleton
-from utils.cls.SuperIntEnum import SuperIntEnum
-from utils.handler_cv2 import HandlerCv2
+from utils.cls import superdecorator, metasingleton, superintenum
+from utils.handlercv2 import HandlerCv2
 
 
-class Results(SuperIntEnum):
+class Results(superintenum.SuperIntEnum):
     INIT = auto()
     IN_PROGRESS = auto()
     WIN = auto()
     LOOSE = auto()
 
 
-class Battle(metaclass=MetaSingleton):
-    def __init__(self, cv2: HandlerCv2):
-        self.cv2 = cv2
+@superdecorator.decorate_all_functions()
+class Battle(metaclass=metasingleton.MetaSingleton):
+    def __init__(self, hcv2: HandlerCv2):
+        self.hcv2 = hcv2 if hcv2 else HandlerCv2()
         self.images = self.cv2.load_images(None)
         self.result = Results.INIT
 
