@@ -125,7 +125,7 @@ class HandlerAdb:
         """
             get resolution of device
         """
-        common.debug("get_resolution ")
+        common.debug("get_resolution")
         self.resolution = common.bytes_to_string(self.execute("shell wm size"))
 
     def init(self):
@@ -195,7 +195,7 @@ class HandlerAdb:
         :param setting:
         :return:
         """
-        common.debug("settings [tmp=" + setting + "]")
+        common.debug("settings [setting=" + setting + "]")
         if setting == "disable_orientation":
             self.execute(
                 "content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:0")
