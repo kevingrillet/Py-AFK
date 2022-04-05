@@ -7,5 +7,5 @@
 <div align="center">
 <a href="https://github.com/kevingrillet/Py-AFK/wiki/Config">Previous page</a>
 |
-<a href="https://github.com/kevingrilletPy-AFK/wiki/Contribute">Next page</a>
+<a href="https://github.com/kevingrillet/Py-AFK/wiki/Contribute">Next page</a>
 </div>
