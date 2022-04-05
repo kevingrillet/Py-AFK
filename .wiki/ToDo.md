@@ -12,11 +12,7 @@
     - [ ] Optimize
     - [ ] Comment, Clean
 - [ ] Check if `game.campaign` is working
-    - [ ] Logic
-        - [ ] `fast_rewards`
-        - [ ] `gift_companion_points`
-        - [ ] `collect_loot`
-        - [ ] `battle`
+    - [x] Logic
     - [ ] Images, Random, ...
     - [ ] Comment, Clean
 - [x] Wiki
