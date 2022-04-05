@@ -23,11 +23,7 @@
    <hr>
 </div>
 
-Welcome to the **Py-AFK**
-
-## Information :pushpin:
-
-> This is still WIP, to see advancement, please check the [ToDo page](https://github.com/kevingrillet/Py-AFK/wiki/ToDo) in the wiki.
+Welcome to the Py-AFK wiki!
 
 ## Description
 
@@ -57,4 +53,12 @@ If you still have a problem, please contact me on [Discord](https://discord.gg/s
    <a href="https://github.com/kyechan99/capsule-render">
       <img align="center" src="https://capsule-render.vercel.app/api?section=footer&type=waving&color=gradient&height=100" />
    </a>
+</div>
+
+<hr>
+
+<div align="center">
+<strike>Previous page</strike>
+|
+<a href="https://github.com/kevingrillet/Py-AFK/wiki/Config">Next page</a>
 </div>
