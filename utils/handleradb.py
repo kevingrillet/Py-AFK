@@ -4,20 +4,22 @@ import random
 import subprocess
 import time
 
+import numpy as np
 import psutil as psutil
 
 from utils import common
 
 
 class HandlerAdb:
-    def __init__(self, device="", adb=""):
+    def __init__(self, device: str = "", adb: str = "", scale: float = 1):
         self.adb = adb
         self.device = device
         self.require_new_capture = True
         self.resolution = None
+        self.scale = scale
         self.system = platform.system()
 
-    def app_check(self, app="") -> bool:
+    def app_check(self, app: str = "") -> bool:
         """
             Check if app is running
         :param app: name of the app
@@ -28,7 +30,7 @@ class HandlerAdb:
             return self.execute("shell pidof " + app) != ""
         return False
 
-    def app_start(self, app="", sleep_timer=0):
+    def app_start(self, app: str = "", sleep_timer: int = 0):
         """
             Start app then sleep for sleep_timer
         :param app: name of the app
@@ -41,7 +43,7 @@ class HandlerAdb:
             self.execute("shell monkey -p " + app + " 1")
             time.sleep(sleep_timer)
 
-    def app_stop(self, app=""):
+    def app_stop(self, app: str = ""):
         """
             Start app then sleep for sleep_timer
         :param app: name of the app
@@ -56,7 +58,7 @@ class HandlerAdb:
             Check if adb repository exists, if not try to download it
         """
 
-        def install(url):
+        def install(url: str):
             """
                 Download ADB and unzip it in the current repository then delete the .zip
             :param url: url of adb
@@ -96,7 +98,7 @@ class HandlerAdb:
             "nox": common.bytes_to_string(self.execute("connect localhost:62001")) == "device"
         }.get(self.device, common.bytes_to_string(self.execute("get-state")) == "device")
 
-    def execute(self, command) -> bytes:
+    def execute(self, command: str) -> bytes:
         """
             execute command, return stdout & stderr
 
@@ -151,7 +153,7 @@ class HandlerAdb:
         self.execute("kill-server")
         self.execute("start-server")
 
-    def screen_input(self, input_type="", coords: list[int] = None, sleep_timer=0):
+    def screen_input(self, input_type: str = "", coords: list[int] = None, sleep_timer: int = 0):
         """
             Input related to screen:
                 - tap       [<X>, <Y>]
@@ -164,6 +166,8 @@ class HandlerAdb:
         """
         if coords is None:
             coords = []
+        if self.scale != 1:
+            coords = list((np.array(coords) * self.scale).astype(int))
         common.debug("screen_input [input_type=" + input_type + ", coords=[" + str(coords)
                      + "], sleep_timer=" + str(sleep_timer) + "]")
         if input_type == "tap" and len(coords) == 2:
@@ -184,7 +188,7 @@ class HandlerAdb:
         # noinspection PyTypeChecker
         return image_bytes
 
-    def settings(self, setting=""):
+    def settings(self, setting: str = ""):
         """
             Function to work on settings, possible arguments:
                 - disable_orientation
@@ -196,7 +200,7 @@ class HandlerAdb:
             self.execute(
                 "content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:0")
 
-    def start(self, app="", sleep_timer=0):
+    def start(self, app: str = "", sleep_timer: int = 0):
         """
             Restart the app
         :param app: app name
@@ -206,7 +210,8 @@ class HandlerAdb:
         self.app_stop(app)
         self.app_start(app, sleep_timer)
 
-    def swipe(self, from_position=None, to_position=None, sleep_timer=0, swipe_timer=0):
+    def swipe(self, from_position: (int, int) = (0, 0), to_position: (int, int) = (0, 0), sleep_timer: int = 0,
+              swipe_timer: int = 0):
         """
             input swipt to screen (short version of screen_input)
         :param from_position:
@@ -215,14 +220,10 @@ class HandlerAdb:
         :param swipe_timer:
         :return:
         """
-        if to_position is None:
-            to_position = [0, 0]
-        if from_position is None:
-            from_position = [0, 0]
         self.screen_input("swipe", [from_position[0], from_position[1], to_position[0], to_position[1], swipe_timer],
                           sleep_timer)
 
-    def tap(self, x=0, y=0, sleep_timer=0):
+    def tap(self, x: int = 0, y: int = 0, sleep_timer: int = 0):
         """
             input tab to screen (short version of screen_input)
         :param x:
@@ -232,7 +233,7 @@ class HandlerAdb:
         """
         self.screen_input("tab", [x, y], sleep_timer)
 
-    def tap_random(self, p1=(0, 0), p2=(0, 0), sleep_timer=0):
+    def tap_random(self, p1: (int, int) = (0, 0), p2: (int, int) = (0, 0), sleep_timer: int = 0):
         """
             input tab to screen (short version of screen_input)
         :param p1:

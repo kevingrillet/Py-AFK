@@ -22,6 +22,7 @@ def load_config():
 
 if __name__ == '__main__':
     try:
+        # Setup everything for the script
         Path('logs/').mkdir(parents=True, exist_ok=True)
         logging.basicConfig(handlers=[logging.StreamHandler(sys.stdout),
                                       logging.FileHandler('logs/' + str(datetime.now()).replace(':', '.') + '.log')],
@@ -30,13 +31,20 @@ if __name__ == '__main__':
         start_time = time.time()
         load_config()
 
-        hadb = handleradb.HandlerAdb()
-        hcv2 = handlercv2.HandlerCv2(hadb)
+        # Start ADB Handler (find ADB, start APP)
+        hadb = handleradb.HandlerAdb(scale=gcst.SCALE)
         hadb.init()
         hadb.start(constant.PACKAGE_NAME, 0)
 
+        # Start CV2 Handler (set ADB to get Screenshots, set scale)
+        hcv2 = handlercv2.HandlerCv2(hadb, scale=gcst.SCALE)
+        hcv2.threshold = 0.9 if gcst.SCALE == 1 else 0.8
+
+        # Wait for the app to start, update, ... after this step, should be in game.
         gc.Common(hcv2).run()
-        # campaign.Campaign(hcv2).run()
+
+        # Real code start here.
+        campaign.Campaign(hcv2).run()
 
         common.info('Done')
 

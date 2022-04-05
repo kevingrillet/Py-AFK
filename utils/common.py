@@ -28,7 +28,7 @@ def debug(msg: str = '', debug_level: int = DebugLevel.ALWAYS):
         logging.debug(msg)
 
 
-def download_file(url) -> str:
+def download_file(url: str) -> str:
     """
         download file from url, return file name from url
     :param url: URL to download
@@ -54,7 +54,7 @@ def fps() -> float:
 fps.frame = time.time()
 
 
-def get_filename_from_url(url) -> str:
+def get_filename_from_url(url: str) -> str:
     """
         return file name from url, last split after "/"
     :param url:
@@ -96,7 +96,7 @@ def sleep(secs: float = 0, msg: str = ''):
     time.sleep(secs)
 
 
-def unzip(filename, path=None):
+def unzip(filename, path: str = None):
     """
         unzip the file in the current repository
     :param filename:

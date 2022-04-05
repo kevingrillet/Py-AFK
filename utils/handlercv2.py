@@ -192,7 +192,13 @@ class HandlerCv2:
         :return:
         """
         x1, y1 = self.find_start
+        if self.scale != 1:
+            x1 = int(x1 / self.scale)
+            y1 = int(y1 / self.scale)
         x2, y2 = self.find_end
+        if self.scale != 1:
+            x2 = int(x2 / self.scale)
+            y2 = int(y2 / self.scale)
         return random.randint(x1, x2), random.randint(y1, y2)
 
     def save_image(self, image=None, folder: str = '.temp'):
@@ -222,9 +228,12 @@ class HandlerCv2:
             cv2.imwrite('.temp/' + str(datetime.now()).replace(':', '.') + '.jpg', self.target_image)
         cv2.destroyWindow('show_image')
 
-    def tap_find(self, sleep_timer=0):
+    def tap_find(self, sleep_timer: int = 0):
         """
             tap at random_find position
         """
         x, y = self.random_find()
+        if self.scale != 1:
+            x = int(x / self.scale)
+            y = int(y / self.scale)
         self.hadb.tap(x, y, sleep_timer)
