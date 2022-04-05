@@ -232,6 +232,7 @@ class HandlerCv2:
         """
             tap at random_find position
         """
+        self.require_new_capture = True
         x, y = self.random_find()
         if self.scale != 1:
             x = int(x / self.scale)
