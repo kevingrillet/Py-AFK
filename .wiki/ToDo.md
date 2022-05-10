@@ -18,27 +18,39 @@
 - [x] Wiki
 - [x] Workflow [*](https://github.com/kevingrillet/Py-ForzaHorizon5-Tools/tree/main/.github)
 
-## Part 2 - First stable version.
+## Part 2 - First stable version (equivalent to [AFK-Daily](https://github.com/zebscripts/AFK-Daily)) 
 
-- [ ] Check if `game.darkforest` is working
+- [ ] Check if `game.darkforest` is 
+    - [ ] Logic
+    - [ ] Images, Random, ...
+    - [ ] Comment, Clean
 - [ ] Check if `game.ranhorn` is working
+    - [ ] Logic
+    - [ ] Images, Random, ...
+    - [ ] Comment, Clean
 - [ ] Check if `game.ending` is working
-- [ ] Config
+    - [ ] Logic
+    - [ ] Images, Random, ...
+    - [ ] Comment, Clean
+- [ ] 
+    - [ ] Logic
+    - [ ] Comment, Clean
 
-## Part 3 - Optimized version.
+## Part 3 - Optimized version
 
 - [ ] Move in `game.battle` code that can be factorized
-    - [ ] Battle end
+    - [ ] Battle (fight, boss, end, ...)
     - [ ] Speed x2, x4, skip
 - [ ] Move in `game.common` code that can be factorized
     - [ ] Level up
-    - [ ] Ressource full
+    - [ ] Ressource full (at least, validate message)
 
 ## Part 4 - Going further
 
 - [ ] Check if `game.heroes` is working
 - [ ] Check if `game.lab` is working
 - [ ] UI
+- [ ] Db with stats
 
 <hr>
 
