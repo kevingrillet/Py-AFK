@@ -38,6 +38,7 @@ if __name__ == '__main__':
 
         # Start CV2 Handler (set ADB to get Screenshots, set scale)
         hcv2 = handlercv2.HandlerCv2(hadb, scale=gcst.SCALE)
+        hcv2.dev()  # Dev mod to take screenshots with adb + cv2
         hcv2.threshold = 0.9 if gcst.SCALE == 1 else 0.8
 
         # Wait for the app to start, update, ... after this step, should be in game.

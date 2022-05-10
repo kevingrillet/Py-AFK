@@ -1,3 +1,4 @@
+from game.constant import CAMPAIGN
 from utils import common
 from utils.cls import superdecorator
 from utils.handlercv2 import HandlerCv2
@@ -111,8 +112,13 @@ class Campaign:
             self.hcv2.hadb.tap(70, 1810, 0)  # Return
 
     def run(self):
-        self.collect_loot()
-        self.battle()
-        self.fast_rewards()
-        self.gift_companion_points()
-        self.collect_loot()
+        if CAMPAIGN['LootAfkChest']:
+            self.collect_loot()
+        if CAMPAIGN['ChallengeBoss']:
+            self.battle()
+        if CAMPAIGN['FastRewards']:
+            self.fast_rewards()
+        if CAMPAIGN['CollectFriendsAndMercenaries']:
+            self.gift_companion_points()
+        if CAMPAIGN['LootAfkChest']:
+            self.collect_loot()
